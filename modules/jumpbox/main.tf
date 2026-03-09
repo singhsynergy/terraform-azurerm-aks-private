@@ -49,16 +49,16 @@ resource "azurerm_network_interface_security_group_association" "sg_association"
   network_security_group_id = azurerm_network_security_group.vm_sg.id
 }
 
-resource "random_password" "adminpassword" {
-  keepers = {
-    resource_group = var.resource_group
-  }
+#resource "random_password" "adminpassword" {
+#  keepers = {
+#    resource_group = var.resource_group
+#  }
 
-  length      = 10
-  min_lower   = 1
-  min_upper   = 1
-  min_numeric = 1
-}
+#  length      = 10
+#  min_lower   = 1
+#  min_upper   = 1
+#  min_numeric = 1
+#}
 
 resource "azurerm_linux_virtual_machine" "jumpbox" {
   name                            = "jumpboxvm"
@@ -68,7 +68,7 @@ resource "azurerm_linux_virtual_machine" "jumpbox" {
   size                            = "Standard_DS1_v2"
   computer_name                   = "jumpboxvm"
   admin_username                  = var.vm_user
-  admin_password                  = random_password.adminpassword.result
+  admin_password                  = var.vm_password
   disable_password_authentication = false
 
   os_disk {
