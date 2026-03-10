@@ -13,3 +13,7 @@ output "jumpbox_vm_user_password" {
   value       = var.vm_password
 }
 
+# output "jumpbox_password" {
+#   description = "Jumpbox VM admin password"
+#   value       = random_string.adminpassword.result
+# }

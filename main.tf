@@ -122,91 +122,13 @@ resource "azurerm_role_assignment" "netcontributor" {
   principal_id         = azurerm_kubernetes_cluster.privateaks.identity[0].principal_id
 }
 
-# module "jumpbox" {
-#   source                  = "./modules/jumpbox"
-#   location                = var.location
-#   resource_group          = azurerm_resource_group.vnet.name
-#   vnet_id                 = module.hub_network.vnet_id
-#   subnet_id               = module.hub_network.subnet_ids["jumpbox-subnet"]
-#   dns_zone_name           = join(".", slice(split(".", azurerm_kubernetes_cluster.privateaks.private_fqdn), 1, length(split(".", azurerm_kubernetes_cluster.privateaks.private_fqdn))))
-#   dns_zone_resource_group = azurerm_kubernetes_cluster.privateaks.node_resource_group
-# }
-
-resource "azurerm_public_ip" "pip" {
-  name                = "vm-pip"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.vnet.name #var.resource_group
-  allocation_method   = "Static"
-  sku                 = "Standard"
-}
-
-resource "azurerm_network_security_group" "vm_sg" {
-  name                = "vm-sg"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.vnet.name #var.resource_group
-
-  security_rule {
-    name                       = "SSH"
-    priority                   = 1001
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "22"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-}
-
-resource "azurerm_network_interface" "vm_nic" {
-  name                = "vm-nic"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.vnet.name #var.resource_group
-
-  ip_configuration {
-    name                          = "vmNicConfiguration"
-    subnet_id                     = module.hub_network.subnet_ids["jumpbox-subnet"] #var.subnet_id
-    private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.pip.id
-  }
-}
-
-resource "azurerm_network_interface_security_group_association" "sg_association" {
-  network_interface_id      = azurerm_network_interface.vm_nic.id
-  network_security_group_id = azurerm_network_security_group.vm_sg.id
-}
-
-resource "azurerm_linux_virtual_machine" "jumpbox" {
-  name                            = "jumpboxvm"
-  location                        = var.location
-  resource_group_name             = azurerm_resource_group.vnet.name #var.resource_group
-  network_interface_ids           = [azurerm_network_interface.vm_nic.id]
-  size                            = "Standard_DS1_v2"
-
-
-  computer_name                   = "jumpboxvm"
-  admin_username                  = var.vm_user
-  admin_password                  = var.vm_password
-  disable_password_authentication = false
-
-  os_disk {
-    name                 = "jumpboxOsDisk"
-    caching              = "ReadWrite"
-    storage_account_type = "Premium_LRS"
-  }
-
-  source_image_reference {
-    publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-jammy"
-    sku       = "22_04-lts"
-    version   = "latest"
-  }
-}
-
-resource "azurerm_private_dns_zone_virtual_network_link" "hublink" {
-  name                  = "hubnetdnsconfig"
-  resource_group_name   = azurerm_kubernetes_cluster.privateaks.node_resource_group #var.dns_zone_resource_group
-  private_dns_zone_name = join(".", slice(split(".", azurerm_kubernetes_cluster.privateaks.private_fqdn), 1, length(split(".", azurerm_kubernetes_cluster.privateaks.private_fqdn)))) #var.dns_zone_name
-  virtual_network_id    = module.hub_network.vnet_id #var.vnet_id
-}
+ module "jumpbox" {
+   source                  = "./modules/jumpbox"
+   location                = var.location
+   resource_group          = azurerm_resource_group.vnet.name
+   vnet_id                 = module.hub_network.vnet_id
+   subnet_id               = module.hub_network.subnet_ids["jumpbox-subnet"]
+   dns_zone_name           = join(".", slice(split(".", azurerm_kubernetes_cluster.privateaks.private_fqdn), 1, length(split(".", azurerm_kubernetes_cluster.privateaks.private_fqdn))))
+   dns_zone_resource_group = azurerm_kubernetes_cluster.privateaks.node_resource_group
+ }
 

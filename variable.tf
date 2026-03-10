@@ -29,8 +29,6 @@ variable "kube_version_prefix" {
   default     = "1.18"
 }
 
-
-
 variable "nodepool_nodes_count" {
   description = "Default nodepool nodes count"
   default     = 1
@@ -55,3 +53,4 @@ variable "network_service_cidr" {
   description = "CNI service cidr"
   default     = "10.2.0.0/24"
 }
+
