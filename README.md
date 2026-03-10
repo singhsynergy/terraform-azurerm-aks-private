@@ -39,6 +39,8 @@ module "aks-private" {
   network_docker_bridge_cidr = "172.17.0.1/16"
   network_dns_service_ip = "10.2.0.10"
   network_service_cidr = "10.2.0.0/24"
+  vm_user = "azureuser"
+  vm_password = "Singhsynergy@1313"
 
 }
 ```
