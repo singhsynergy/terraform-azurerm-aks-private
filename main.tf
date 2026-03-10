@@ -128,7 +128,10 @@ resource "azurerm_role_assignment" "netcontributor" {
    resource_group          = azurerm_resource_group.vnet.name
    vnet_id                 = module.hub_network.vnet_id
    subnet_id               = module.hub_network.subnet_ids["jumpbox-subnet"]
+   vm_user                 = var.vm_user
+   vm_password             = var.vm_password
    dns_zone_name           = join(".", slice(split(".", azurerm_kubernetes_cluster.privateaks.private_fqdn), 1, length(split(".", azurerm_kubernetes_cluster.privateaks.private_fqdn))))
    dns_zone_resource_group = azurerm_kubernetes_cluster.privateaks.node_resource_group
  }
+
 
