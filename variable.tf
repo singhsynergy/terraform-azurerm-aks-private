@@ -54,3 +54,11 @@ variable "network_service_cidr" {
   default     = "10.2.0.0/24"
 }
 
+variable vm_user {
+  description = "Jumpbox VM user name"
+  type        = string
+}
+
+variable vm_password {
+  type        = string
+}
