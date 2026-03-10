@@ -1,7 +1,7 @@
 # terraform-azurerm-aks-private
 
 ## provider.tf
-
+```yaml
 # We strongly recommend using the required_providers block to set the
 # Azure Provider source and version being used
 terraform {
@@ -17,8 +17,12 @@ terraform {
 provider "azurerm" {
   features {}
 }
+```
+
 
 ## main.tf
+
+```yaml
 
 module "aks-private" {
   source  = "singhsynergy/aks-private/azurerm"
@@ -37,8 +41,10 @@ module "aks-private" {
   network_service_cidr = "10.2.0.0/24"
 
 }
+```
 
 ## output.tf
+```yaml
 output "jumpbox_vm_ip" {
   value = module.aks-private.jumpbox_vm_ip
 }
@@ -51,3 +57,4 @@ output "jumpbox_vm_user_password" {
   value     = module.aks-private.jumpbox_vm_user_password
   sensitive = true
 }
+```
