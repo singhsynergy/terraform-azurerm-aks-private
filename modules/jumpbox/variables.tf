@@ -30,7 +30,7 @@ variable dns_zone_resource_group {
 variable vm_user {
   description = "Jumpbox VM user name"
   type        = string
-  default     = azureuser
+  default     = "azureuser"
 }
 
 variable vm_password {
